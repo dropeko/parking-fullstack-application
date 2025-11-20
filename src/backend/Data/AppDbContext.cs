@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using Parking.Api.Models;
 
@@ -10,6 +9,7 @@ namespace Parking.Api.Data
 
         public DbSet<Cliente> Clientes => Set<Cliente>();
         public DbSet<Veiculo> Veiculos => Set<Veiculo>();
+        public DbSet<VeiculoTransferencia> VeiculosTransferencias => Set<VeiculoTransferencia>();
         public DbSet<Fatura> Faturas => Set<Fatura>();
         public DbSet<FaturaVeiculo> FaturasVeiculos => Set<FaturaVeiculo>();
 
@@ -43,6 +43,33 @@ namespace Parking.Api.Data
                 e.Property(x => x.DataInclusao).HasColumnName("data_inclusao");
                 e.Property(x => x.ClienteId).HasColumnName("cliente_id");
                 e.HasIndex(x => x.Placa).IsUnique();
+                e.HasMany(x => x.Transferencias).WithOne(x => x.Veiculo).HasForeignKey(x => x.VeiculoId);
+            });
+
+            modelBuilder.Entity<VeiculoTransferencia>(e =>
+            {
+                e.ToTable("veiculo_transferencia", "public");
+                e.HasKey(x => x.Id);
+                e.Property(x => x.Id).HasColumnName("id");
+                e.Property(x => x.VeiculoId).HasColumnName("veiculo_id");
+                e.Property(x => x.ClienteAnteriorId).HasColumnName("cliente_anterior_id");
+                e.Property(x => x.ClienteNovoId).HasColumnName("cliente_novo_id");
+                e.Property(x => x.DataTransferencia).HasColumnName("data_transferencia");
+                e.Property(x => x.Motivo).HasColumnName("motivo").HasMaxLength(500);
+
+                e.HasOne(x => x.ClienteAnterior)
+                    .WithMany()
+                    .HasForeignKey(x => x.ClienteAnteriorId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.ClienteNovo)
+                    .WithMany()
+                    .HasForeignKey(x => x.ClienteNovoId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasIndex(x => x.VeiculoId);
+                e.HasIndex(x => x.DataTransferencia);
+                e.HasIndex(x => new { x.VeiculoId, x.DataTransferencia });
             });
 
             modelBuilder.Entity<Fatura>(e =>
