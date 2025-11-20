@@ -161,6 +161,18 @@ namespace Parking.Api.Controllers
                 if (dto.Ano.HasValue && (dto.Ano < 1930 || dto.Ano > DateTime.Now.Year + 1))
                     return BadRequest(new { message = "Ano deve estar entre 1930 e " + (DateTime.Now.Year + 1) });
 
+                if (v.ClienteId != dto.ClienteId)
+                    {
+                        var transferencia = new VeiculoTransferencia
+                        {
+                            VeiculoId = id,
+                            ClienteAnteriorId = v.ClienteId,
+                            ClienteNovoId = dto.ClienteId,
+                            Motivo = "Transferência via edição"
+                        };
+                        _db.VeiculosTransferencias.Add(transferencia);
+                    }
+
                 v.Placa = placa;
                 v.Modelo = string.IsNullOrWhiteSpace(dto.Modelo) ? null : dto.Modelo.Trim();
                 v.Ano = dto.Ano;
