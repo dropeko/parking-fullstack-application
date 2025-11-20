@@ -1,7 +1,7 @@
 placa,modelo,ano,cliente_identificador,cliente_nome,cliente_telefone,cliente_endereco,mensalista,valor_mensalidade
-BRA1A23,Gol,2019,CLI-001,João Souza,31 99999-0001,"Rua A, 123",true,189.90
-RCH2B45,Onix,2020,CLI-002,Maria Lima,31 98888-0002,"Av. B, 456",false,
-ABC1D23,HB20,2018,CLI-001,João Souza,31 99999-0001,"Rua A, 123",true,189.90
-AAA-1111,Uno,2015,CLI-003,Carlos Silva,(31) 97777-0003,"Rua C, 789",true,159.90
-INV-XXXX,Carro,2020,CLI-004,Erro Placa,31 96666-0004,"Rua X, 000",true,120.00
-BRA1A23,Gol,2019,CLI-001,Duplicada,31 95555-0005,"Rua Dup, 12",true,100.00
+BTA3A23,Gol Bolão,2019,CLI-111,Claber Santos,31 99999-1201,"Rua AA, 123",true,189.90
+RDH2B77,Onix Hatchu,2025,CLI-112,Maria Lima,31 98888-1202,"Av., BB 456",false,
+ABZ1M23,HB200,2018,CLI-111,Claber Santos,31 99999-1201,"Rua AA, 123",true,189.90
+ACD-2111,Uno Way,2015,CLI-113,Carlas Silva,(31) 97777-1203,"Rua CC, 78",true,159.90
+IBT-7777,Opala,1965,CLI-114,Semi Erro Placa,31 96666-1204,"Rua XX, 000",true,120.00
+BRY1A63,Gol Quadrão,1994,CLI-1001,Ext Duplicada,31 95555-1005,"Rua DD, 12",true,100.00

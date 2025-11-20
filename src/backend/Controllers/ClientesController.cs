@@ -15,7 +15,7 @@ namespace Parking.Api.Controllers
         public ClientesController(AppDbContext db) => _db = db;
 
         [HttpGet]
-        public async Task<IActionResult> List([FromQuery] int pagina = 1, [FromQuery] int tamanho = 10, [FromQuery] string? filtro = null, [FromQuery] string mensalista = "all")
+        public async Task<IActionResult> List([FromQuery] int pagina = 1, [FromQuery] int tamanho = 20, [FromQuery] string? filtro = null, [FromQuery] string mensalista = "all")
         {
             var q = _db.Clientes.AsQueryable();
             if (!string.IsNullOrWhiteSpace(filtro))
