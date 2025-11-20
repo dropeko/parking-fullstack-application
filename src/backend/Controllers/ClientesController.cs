@@ -102,15 +102,70 @@ namespace Parking.Api.Controllers
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] ClienteUpdateDto dto)
         {
-            var c = await _db.Clientes.FindAsync(id);
-            if (c == null) return NotFound();
-            c.Nome = dto.Nome;
-            c.Telefone = dto.Telefone;
-            c.Endereco = dto.Endereco;
-            c.Mensalista = dto.Mensalista;
-            c.ValorMensalidade = dto.ValorMensalidade;
-            await _db.SaveChangesAsync();
-            return Ok(c);
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                if (string.IsNullOrWhiteSpace(dto.Nome))
+                    return BadRequest(new { message = "Nome é obrigatório" });
+
+                if (dto.Mensalista && (dto.ValorMensalidade == null || dto.ValorMensalidade <= 0))
+                    return BadRequest(new { message = "Valor da mensalidade deve ser maior que zero para clientes mensalistas" });
+
+                if (!dto.Mensalista && dto.ValorMensalidade != null)
+                    return BadRequest(new { message = "Clientes não mensalistas não podem ter valor de mensalidade" });
+
+                var cliente = await _db.Clientes.FindAsync(id);
+                if (cliente == null) 
+                    return NotFound(new { message = "Cliente não encontrado" });
+
+                var nomeNormalizado = dto.Nome.Trim().ToLower();
+                var telefoneNormalizado = string.IsNullOrWhiteSpace(dto.Telefone) ? null : dto.Telefone.Trim();
+
+                var existeOutroCliente = await _db.Clientes.AnyAsync(c => 
+                    c.Id != id &&
+                    c.Nome.ToLower() == nomeNormalizado && 
+                    (telefoneNormalizado == null || c.Telefone == null || c.Telefone == telefoneNormalizado));
+
+                if (existeOutroCliente) 
+                    return Conflict(new { message = "Já existe outro cliente com esta combinação de nome e telefone" });
+
+                cliente.Nome = dto.Nome.Trim();
+                cliente.Telefone = string.IsNullOrWhiteSpace(dto.Telefone) ? null : dto.Telefone.Trim();
+                cliente.Endereco = string.IsNullOrWhiteSpace(dto.Endereco) ? null : dto.Endereco.Trim();
+                cliente.Mensalista = dto.Mensalista;
+                cliente.ValorMensalidade = dto.Mensalista ? dto.ValorMensalidade : null;
+
+                await _db.SaveChangesAsync();
+
+                var clienteAtualizado = await _db.Clientes
+                    .Include(x => x.Veiculos)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+                var response = new ClienteResponseDto(
+                    clienteAtualizado!.Id,
+                    clienteAtualizado.Nome,
+                    clienteAtualizado.Telefone,
+                    clienteAtualizado.Endereco,
+                    clienteAtualizado.Mensalista,
+                    clienteAtualizado.ValorMensalidade,
+                    clienteAtualizado.DataInclusao,
+                    clienteAtualizado.Veiculos.Select(v => new VeiculoDto(
+                        v.Id,
+                        v.Placa,
+                        v.Modelo,
+                        v.Ano,
+                        v.DataInclusao
+                    )).ToList()
+                );
+
+                return Ok(response);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return Conflict(new { message = "Cliente foi modificado por outro usuário. Recarregue os dados e tente novamente" });
+            }
         }
 
 

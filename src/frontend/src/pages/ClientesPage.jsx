@@ -1,12 +1,22 @@
 import React, { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { apiGet, apiPost, apiDelete } from '../api'
+import { apiGet, apiPost, apiPut, apiDelete } from '../api'
 
 export default function ClientesPage(){
   const qc = useQueryClient()
   const [filtro, setFiltro] = useState('')
   const [mensalista, setMensalista] = useState('all')
   const [form, setForm] = useState({ nome:'', telefone:'', endereco:'', mensalista:false, valorMensalidade:'' })
+  const [editModal, setEditModal] = useState(false)
+  const [editError, setEditError] = useState('')
+  const [editForm, setEditForm] = useState({ 
+    id: '', 
+    nome: '', 
+    telefone: '', 
+    endereco: '', 
+    mensalista: false, 
+    valorMensalidade: '' 
+  })
 
   const q = useQuery({
     queryKey:['clientes', filtro, mensalista],
@@ -18,10 +28,58 @@ export default function ClientesPage(){
     onSuccess: () => qc.invalidateQueries({ queryKey:['clientes'] })
   })
 
+  const update = useMutation({
+    mutationFn: ({ id, data }) => apiPut(`/api/clientes/${id}`, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey:['clientes'] })
+      setEditModal(false)
+      setEditError('')
+    },
+    onError: (error) => {
+      try {
+        const errorData = JSON.parse(error.message)
+        setEditError(errorData.message || 'Erro ao atualizar cliente')
+      } catch {
+        setEditError('Erro ao atualizar cliente')
+      }
+    }
+  })
+
   const remover = useMutation({
     mutationFn: (id) => apiDelete(`/api/clientes/${id}`),
     onSuccess: () => qc.invalidateQueries({ queryKey:['clientes'] })
   })
+
+  const handleEdit = (cliente) => {
+    setEditForm({
+      id: cliente.id,
+      nome: cliente.nome,
+      telefone: cliente.telefone || '',
+      endereco: cliente.endereco || '',
+      mensalista: cliente.mensalista,
+      valorMensalidade: cliente.valorMensalidade ? cliente.valorMensalidade.toString() : null
+    })
+    setEditError('')
+    setEditModal(true)
+  }
+
+  const closeModal = () => {
+    setEditModal(false)
+    setEditError('')
+    setEditForm({ id: '', nome: '', telefone: '', endereco: '', mensalista: false, valorMensalidade: '' })
+  }
+
+  const handleSaveEdit = () => {
+    const data = {
+      nome: editForm.nome,
+      telefone: editForm.telefone || null,
+      endereco: editForm.endereco || null,
+      mensalista: editForm.mensalista,
+      valorMensalidade: editForm.valorMensalidade ? Number(editForm.valorMensalidade) : null
+    }
+    
+    update.mutate({ id: editForm.id, data })
+  }
 
   return (
     <div>
@@ -62,7 +120,7 @@ export default function ClientesPage(){
       <div className="section">
         {q.isLoading? <p>Carregando...</p> : (
           <table>
-            <thead><tr><th>Nome</th><th>Telefone</th><th>Mensalista</th><th></th></tr></thead>
+            <thead><tr><th>Nome</th><th>Telefone</th><th>Mensalista</th><th>Ações</th></tr></thead>
             <tbody>
               {q.data.itens.map(c=>(
                 <tr key={c.id}>
@@ -70,7 +128,12 @@ export default function ClientesPage(){
                   <td>{c.telefone}</td>
                   <td>{c.mensalista? 'Sim':'Não'}</td>
                   <td>
-                    <button className="btn-ghost" onClick={()=>remover.mutate(c.id)}>Excluir</button>
+                    <button className="btn-ghost" onClick={()=>handleEdit(c)} style={{marginRight: '8px'}}>
+                      Editar
+                    </button>
+                    <button className="btn-ghost" onClick={()=>remover.mutate(c.id)}>
+                      Excluir
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -78,6 +141,139 @@ export default function ClientesPage(){
           </table>
         )}
       </div>
+
+      {editModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '24px',
+            borderRadius: '8px',
+            minWidth: '500px',
+            maxWidth: '90vw',
+            maxHeight: '90vh',
+            overflow: 'auto'
+          }}>
+            <h3 style={{marginTop: 0}}>Editar Cliente</h3>
+            
+            {editError && (
+              <div style={{
+                backgroundColor: '#fee',
+                color: '#c33',
+                padding: '12px',
+                borderRadius: '4px',
+                marginBottom: '16px',
+                border: '1px solid #fcc'
+              }}>
+                {editError}
+              </div>
+            )}
+
+            <div style={{marginBottom: '16px'}}>
+              <label style={{display: 'block', marginBottom: '4px', fontWeight: 'bold'}}>
+                Nome *
+              </label>
+              <input 
+                placeholder="Nome do cliente" 
+                value={editForm.nome} 
+                onChange={e=>setEditForm({...editForm, nome:e.target.value})}
+                style={{width: '100%', padding: '8px', border: '1px solid #ddd', borderRadius: '4px'}}
+              />
+            </div>
+
+            <div style={{marginBottom: '16px'}}>
+              <label style={{display: 'block', marginBottom: '4px', fontWeight: 'bold'}}>
+                Telefone
+              </label>
+              <input 
+                placeholder="Telefone" 
+                value={editForm.telefone} 
+                onChange={e=>setEditForm({...editForm, telefone:e.target.value})}
+                style={{width: '100%', padding: '8px', border: '1px solid #ddd', borderRadius: '4px'}}
+              />
+            </div>
+
+            <div style={{marginBottom: '16px'}}>
+              <label style={{display: 'block', marginBottom: '4px', fontWeight: 'bold'}}>
+                Endereço
+              </label>
+              <input 
+                placeholder="Endereço" 
+                value={editForm.endereco} 
+                onChange={e=>setEditForm({...editForm, endereco:e.target.value})}
+                style={{width: '100%', padding: '8px', border: '1px solid #ddd', borderRadius: '4px'}}
+              />
+            </div>
+
+            <div style={{marginBottom: '16px'}}>
+              <label style={{display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold'}}>
+                <input 
+                  type="checkbox" 
+                  checked={editForm.mensalista} 
+                  onChange={e=>setEditForm({...editForm, mensalista:e.target.checked})}
+                />
+                Cliente Mensalista
+              </label>
+            </div>
+
+            {editForm.mensalista && (
+              <div style={{marginBottom: '16px'}}>
+                <label style={{display: 'block', marginBottom: '4px', fontWeight: 'bold'}}>
+                  Valor da Mensalidade *
+                </label>
+                <input 
+                  type="number"
+                  step="0.01"
+                  placeholder="Valor da mensalidade" 
+                  value={editForm.valorMensalidade} 
+                  onChange={e=>setEditForm({...editForm, valorMensalidade:e.target.value})}
+                  style={{width: '100%', padding: '8px', border: '1px solid #ddd', borderRadius: '4px'}}
+                />
+              </div>
+            )}
+
+            <div style={{display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px'}}>
+              <button 
+                onClick={handleSaveEdit}
+                disabled={update.isPending}
+                style={{
+                  padding: '8px 16px',
+                  border: 'none',
+                  borderRadius: '4px',
+                  backgroundColor: '#007bff',
+                  color: 'black',
+                  cursor: update.isPending ? 'not-allowed' : 'pointer',
+                  opacity: update.isPending ? 0.7 : 1
+                }}
+              >
+                {update.isPending ? 'Salvando...' : 'Salvar'}
+              </button>
+              <button 
+                onClick={closeModal}
+                style={{
+                  padding: '8px 16px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  backgroundColor: 'white',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
