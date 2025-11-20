@@ -248,7 +248,7 @@ export default function ClientesPage(){
                 disabled={update.isPending}
                 style={{
                   padding: '8px 16px',
-                  border: 'none',
+                  border: '1px solid #ddd',
                   borderRadius: '4px',
                   backgroundColor: '#007bff',
                   color: 'black',
