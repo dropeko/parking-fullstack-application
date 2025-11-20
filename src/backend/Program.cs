@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // PostgreSQL connection
 var conn = builder.Configuration.GetConnectionString("Postgres")
-           ?? "Host=localhost;Port=5432;Database=parking_test;Username=postgres;Password=postgres";
+           ?? "Host=localhost;Port=5432;Database=db_parking;Username=postgres;Password=123";
 
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {

@@ -28,6 +28,25 @@ namespace Parking.Api.Controllers
                 .OrderBy(c => c.Nome)
                 .Skip((pagina - 1) * tamanho)
                 .Take(tamanho)
+                .Select(c => new
+                {
+                    c.Id,
+                    c.Nome,
+                    c.Telefone,
+                    c.Endereco,
+                    c.Mensalista,
+                    c.ValorMensalidade,
+                    c.DataInclusao,
+                    QuantidadeVeiculos = c.Veiculos.Count(),
+                    Veiculos = c.Veiculos.Select(v => new
+                    {
+                        v.Id,
+                        v.Placa,
+                        v.Modelo,
+                        v.Ano,
+                        v.DataInclusao
+                    }).ToList()
+                })
                 .ToListAsync();
             return Ok(new { total, itens });
         }
@@ -54,8 +73,30 @@ namespace Parking.Api.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var c = await _db.Clientes.Include(x => x.Veiculos).FirstOrDefaultAsync(x => x.Id == id);
-            return c == null ? NotFound() : Ok(c);
+            var c = await _db.Clientes
+                .Include(x => x.Veiculos)
+                .FirstOrDefaultAsync(x => x.Id == id);
+            
+            if (c == null) return NotFound();
+
+            var response = new ClienteResponseDto(
+                c.Id,
+                c.Nome,
+                c.Telefone,
+                c.Endereco,
+                c.Mensalista,
+                c.ValorMensalidade,
+                c.DataInclusao,
+                c.Veiculos.Select(v => new VeiculoDto(
+                    v.Id,
+                    v.Placa,
+                    v.Modelo,
+                    v.Ano,
+                    v.DataInclusao
+                )).ToList()
+            );
+
+            return Ok(response);
         }
 
         [HttpPut("{id:guid}")]

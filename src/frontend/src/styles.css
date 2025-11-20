@@ -126,7 +126,7 @@ tbody td{
 tbody tr:last-child td{ border-bottom:none; }
 tbody tr:hover td{ background:#fafbfc; }
 
-/* ---------- Notas/TODO ---------- */
+/* ---------- Notas/ ---------- */
 .note{
   margin-top:8px; color:#6b7280; font-size:13px;
 }
