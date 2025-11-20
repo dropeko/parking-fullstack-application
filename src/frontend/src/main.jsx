@@ -13,7 +13,7 @@ const qc = new QueryClient()
 function Layout(){
   return (
     <div className="app">
-      <h1>PHCA Parking Spot</h1>
+      <h1>PHCA Parking System</h1>
       <nav>
         <Link to="/">Clientes</Link>
         <Link to="/veiculos">Veículos</Link>
