@@ -101,6 +101,239 @@ export default function ClientesPage(){
       padding: '20px'
     }}>
       <h2 style={{color: '#f1f5f9', marginBottom: '24px'}}>👥 Clientes</h2>
+      
+{/* Formulário de Novo Cliente */}
+      <div style={{
+        backgroundColor: '#1e293b',
+        border: '1px solid #374151',
+        borderRadius: '12px',
+        padding: '20px',
+        marginBottom: '32px'
+      }}>
+        <h3 style={{color: '#f1f5f9', marginBottom: '20px', fontSize: '18px'}}>➕ Novo Cliente</h3>
+        
+        <div style={{
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+          gap: '16px',
+          marginBottom: '16px'
+        }}>
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '6px',
+              fontSize: '14px',
+              color: '#94a3b8',
+              fontWeight: '500'
+            }}>
+              Nome *
+            </label>
+            <input 
+              placeholder="Nome completo do cliente" 
+              value={form.nome} 
+              onChange={e => setForm({...form, nome: e.target.value})}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                border: '1px solid #475569',
+                borderRadius: '8px',
+                fontSize: '14px',
+                backgroundColor: '#0f172a',
+                color: '#f1f5f9'
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '6px',
+              fontSize: '14px',
+              color: '#94a3b8',
+              fontWeight: '500'
+            }}>
+              Telefone
+            </label>
+            <input 
+              placeholder="(31) 99999-9999" 
+              value={form.telefone} 
+              onChange={e => setForm({...form, telefone: e.target.value})}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                border: '1px solid #475569',
+                borderRadius: '8px',
+                fontSize: '14px',
+                backgroundColor: '#0f172a',
+                color: '#f1f5f9'
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '6px',
+              fontSize: '14px',
+              color: '#94a3b8',
+              fontWeight: '500'
+            }}>
+              Endereço
+            </label>
+            <input 
+              placeholder="Endereço completo (opcional)" 
+              value={form.endereco} 
+              onChange={e => setForm({...form, endereco: e.target.value})}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                border: '1px solid #475569',
+                borderRadius: '8px',
+                fontSize: '14px',
+                backgroundColor: '#0f172a',
+                color: '#f1f5f9'
+              }}
+            />
+          </div>
+
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'end'
+          }}>
+            <label style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '14px',
+              color: '#f1f5f9',
+              fontWeight: '500',
+              cursor: 'pointer',
+              padding: '10px 0'
+            }}>
+              <input 
+                type="checkbox" 
+                checked={form.mensalista} 
+                onChange={e => setForm({...form, mensalista: e.target.checked})}
+                style={{
+                  width: '16px',
+                  height: '16px',
+                  accentColor: '#3b82f6'
+                }}
+              />
+              🎯 Cliente Mensalista
+            </label>
+          </div>
+        </div>
+
+        {/* Campo de Valor da Mensalidade - Aparece quando mensalista é marcado */}
+        {form.mensalista && (
+          <div style={{
+            marginBottom: '16px',
+            padding: '16px',
+            backgroundColor: '#0f1f0f',
+            border: '1px solid #22c55e',
+            borderRadius: '8px'
+          }}>
+            <label style={{
+              display: 'block',
+              marginBottom: '6px',
+              fontSize: '14px',
+              color: '#86efac',
+              fontWeight: '500'
+            }}>
+              Valor da Mensalidade *
+            </label>
+            <input 
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="189.90" 
+              value={form.valorMensalidade} 
+              onChange={e => setForm({...form, valorMensalidade: e.target.value})}
+              style={{
+                width: '200px',
+                padding: '10px 12px',
+                border: '1px solid #22c55e',
+                borderRadius: '8px',
+                fontSize: '14px',
+                backgroundColor: '#0f172a',
+                color: '#f1f5f9'
+              }}
+            />
+            <small style={{
+              display: 'block',
+              marginTop: '4px',
+              color: '#4ade80',
+              fontSize: '12px'
+            }}>
+              💡 Valor que será cobrado mensalmente
+            </small>
+          </div>
+        )}
+
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <button 
+            onClick={() => create.mutate({
+              nome: form.nome, 
+              telefone: form.telefone || null, 
+              endereco: form.endereco || null,
+              mensalista: form.mensalista, 
+              valorMensalidade: form.valorMensalidade ? Number(form.valorMensalidade) : null
+            })}
+            disabled={create.isPending || !form.nome || (form.mensalista && !form.valorMensalidade)}
+            style={{
+              padding: '12px 24px',
+              backgroundColor: create.isPending || !form.nome || (form.mensalista && !form.valorMensalidade) ? '#6b7280' : '#22c55e',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: create.isPending || !form.nome || (form.mensalista && !form.valorMensalidade) ? 'not-allowed' : 'pointer',
+              fontSize: '14px',
+              fontWeight: '600',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+            onMouseEnter={(e) => {
+              if (!create.isPending && form.nome && (!form.mensalista || form.valorMensalidade)) {
+                e.target.style.backgroundColor = '#16a34a'
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!create.isPending) {
+                e.target.style.backgroundColor = (!form.nome || (form.mensalista && !form.valorMensalidade)) ? '#6b7280' : '#22c55e'
+              }
+            }}
+          >
+            {create.isPending ? (
+              <>⏳ Salvando...</>
+            ) : (
+              <>💾 Salvar Cliente</>
+            )}
+          </button>
+        </div>
+
+        {(!form.nome || (form.mensalista && !form.valorMensalidade)) && (
+          <div style={{
+            marginTop: '12px',
+            padding: '8px 12px',
+            backgroundColor: '#1f1a0f',
+            border: '1px solid #f59e0b',
+            borderRadius: '6px',
+            fontSize: '12px',
+            width: '15%',
+            display: 'flex',
+            justifyContent: 'center',
+            justifySelf: 'center',
+          }}>
+            <span style={{color: '#fbbf24'}}>
+              ⚠️ {!form.nome ? 'Nome é obrigatório' : 'Valor da mensalidade é obrigatório para clientes mensalistas'}
+            </span>
+          </div>
+        )}
+      </div>
 
       {/* Filtros */}
       <div style={{
@@ -236,223 +469,6 @@ export default function ClientesPage(){
           </div>
         </div>
       )}
-
-      {/* Formulário de Novo Cliente */}
-      <div style={{
-        backgroundColor: '#1e293b',
-        border: '1px solid #374151',
-        borderRadius: '12px',
-        padding: '20px',
-        marginBottom: '32px'
-      }}>
-        <h3 style={{color: '#f1f5f9', marginBottom: '20px', fontSize: '18px'}}>➕ Novo Cliente</h3>
-        
-        <div style={{
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-          gap: '16px',
-          marginBottom: '16px'
-        }}>
-          <div>
-            <label style={{
-              display: 'block',
-              marginBottom: '6px',
-              fontSize: '14px',
-              color: '#94a3b8',
-              fontWeight: '500'
-            }}>
-              Nome *
-            </label>
-            <input 
-              placeholder="Nome completo do cliente" 
-              value={form.nome} 
-              onChange={e => setForm({...form, nome: e.target.value})}
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                border: '1px solid #475569',
-                borderRadius: '8px',
-                fontSize: '14px',
-                backgroundColor: '#0f172a',
-                color: '#f1f5f9'
-              }}
-            />
-          </div>
-
-          <div>
-            <label style={{
-              display: 'block',
-              marginBottom: '6px',
-              fontSize: '14px',
-              color: '#94a3b8',
-              fontWeight: '500'
-            }}>
-              Telefone
-            </label>
-            <input 
-              placeholder="(31) 99999-9999" 
-              value={form.telefone} 
-              onChange={e => setForm({...form, telefone: e.target.value})}
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                border: '1px solid #475569',
-                borderRadius: '8px',
-                fontSize: '14px',
-                backgroundColor: '#0f172a',
-                color: '#f1f5f9'
-              }}
-            />
-          </div>
-
-          <div style={{gridColumn: 'span 2'}}>
-            <label style={{
-              display: 'block',
-              marginBottom: '6px',
-              fontSize: '14px',
-              color: '#94a3b8',
-              fontWeight: '500'
-            }}>
-              Endereço
-            </label>
-            <input 
-              placeholder="Endereço completo (opcional)" 
-              value={form.endereco} 
-              onChange={e => setForm({...form, endereco: e.target.value})}
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                border: '1px solid #475569',
-                borderRadius: '8px',
-                fontSize: '14px',
-                backgroundColor: '#0f172a',
-                color: '#f1f5f9'
-              }}
-            />
-          </div>
-        </div>
-
-        <div style={{
-          display: 'flex',
-          gap: '24px',
-          alignItems: 'end',
-          flexWrap: 'wrap',
-          marginBottom: '16px'
-        }}>
-          <div>
-            <label style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              fontSize: '14px',
-              color: '#f1f5f9',
-              fontWeight: '500',
-              cursor: 'pointer'
-            }}>
-              <input 
-                type="checkbox" 
-                checked={form.mensalista} 
-                onChange={e => setForm({...form, mensalista: e.target.checked})}
-                style={{
-                  width: '16px',
-                  height: '16px',
-                  accentColor: '#3b82f6'
-                }}
-              />
-              🎯 Cliente Mensalista
-            </label>
-          </div>
-
-          {form.mensalista && (
-            <div>
-              <label style={{
-                display: 'block',
-                marginBottom: '6px',
-                fontSize: '14px',
-                color: '#94a3b8',
-                fontWeight: '500'
-              }}>
-                Valor da Mensalidade *
-              </label>
-              <input 
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="189.90" 
-                value={form.valorMensalidade} 
-                onChange={e => setForm({...form, valorMensalidade: e.target.value})}
-                style={{
-                  width: '150px',
-                  padding: '10px 12px',
-                  border: '1px solid #475569',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  backgroundColor: '#0f172a',
-                  color: '#f1f5f9'
-                }}
-              />
-            </div>
-          )}
-        </div>
-
-        <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-          <button 
-            onClick={() => create.mutate({
-              nome: form.nome, 
-              telefone: form.telefone || null, 
-              endereco: form.endereco || null,
-              mensalista: form.mensalista, 
-              valorMensalidade: form.valorMensalidade ? Number(form.valorMensalidade) : null
-            })}
-            disabled={create.isPending || !form.nome || (form.mensalista && !form.valorMensalidade)}
-            style={{
-              padding: '12px 24px',
-              backgroundColor: create.isPending || !form.nome || (form.mensalista && !form.valorMensalidade) ? '#6b7280' : '#22c55e',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: create.isPending || !form.nome || (form.mensalista && !form.valorMensalidade) ? 'not-allowed' : 'pointer',
-              fontSize: '14px',
-              fontWeight: '600',
-              transition: 'all 0.2s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-            onMouseEnter={(e) => {
-              if (!create.isPending && form.nome && (!form.mensalista || form.valorMensalidade)) {
-                e.target.style.backgroundColor = '#16a34a'
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!create.isPending) {
-                e.target.style.backgroundColor = (!form.nome || (form.mensalista && !form.valorMensalidade)) ? '#6b7280' : '#22c55e'
-              }
-            }}
-          >
-            {create.isPending ? (
-              <>⏳ Salvando...</>
-            ) : (
-              <>💾 Salvar Cliente</>
-            )}
-          </button>
-        </div>
-
-        {(!form.nome || (form.mensalista && !form.valorMensalidade)) && (
-          <div style={{
-            marginTop: '12px',
-            padding: '8px 12px',
-            backgroundColor: '#1f1a0f',
-            border: '1px solid #f59e0b',
-            borderRadius: '6px',
-            fontSize: '12px'
-          }}>
-            <span style={{color: '#fbbf24'}}>
-              ⚠️ {!form.nome ? 'Nome é obrigatório' : 'Valor da mensalidade é obrigatório para clientes mensalistas'}
-            </span>
-          </div>
-        )}
-      </div>
 
       {/* Lista de Clientes */}
       <div style={{
