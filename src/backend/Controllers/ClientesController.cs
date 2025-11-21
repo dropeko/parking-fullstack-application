@@ -168,6 +168,7 @@ namespace Parking.Api.Controllers
             }
         }
 
+
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {

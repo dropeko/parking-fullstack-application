@@ -37,7 +37,7 @@ namespace Parking.Api.Controllers
                         f.ClienteId,
                         f.Valor,
                         veiculos = f.Veiculos.Count,
-                        f.Observacao
+                        f.Observacoes
                     })
                 });
             }
@@ -61,15 +61,15 @@ namespace Parking.Api.Controllers
                 q = q.Where(f => f.Competencia == competencia);
                 
             var list = await q
-                .OrderByDescending(f => f.CriadaEm)
+                .OrderByDescending(f => f.DataCriacao)
                 .Select(f => new {
                     f.Id, 
                     f.Competencia, 
                     f.ClienteId, 
                     f.Valor, 
-                    f.CriadaEm,
-                    f.Observacao,
-                    qtdVeiculos = f.Veiculos.Count
+                    f.DataCriacao,
+                    f.Observacoes,
+                    qtdVeiculos = f.QtdVeiculos
                 })
                 .ToListAsync();
                 

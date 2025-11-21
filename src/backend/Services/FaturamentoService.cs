@@ -91,7 +91,8 @@ namespace Parking.Api.Services
                     Competencia = competencia,
                     ClienteId = faturaCliente.ClienteId,
                     Valor = valorTotal,
-                    Observacao = observacao
+                    QtdVeiculos = faturaCliente.Veiculos.Count, // Atualizado
+                    Observacoes = observacao // Atualizado
                 };
 
                 // Adicionar veículos à fatura
