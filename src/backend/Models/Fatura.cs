@@ -7,8 +7,9 @@ namespace Parking.Api.Models
         public string Competencia { get; set; } = ""; // yyyy-MM
         public Guid ClienteId { get; set; }
         public decimal Valor { get; set; }
-        public DateTime CriadaEm { get; set; } = DateTime.UtcNow;
-        public string? Observacao { get; set; }
+        public int QtdVeiculos { get; set; } = 0;
+        public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
+        public string? Observacoes { get; set; }
 
         public List<FaturaVeiculo> Veiculos { get; set; } = new();
     }

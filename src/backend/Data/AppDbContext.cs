@@ -37,7 +37,7 @@ namespace Parking.Api.Data
                 e.ToTable("veiculo", "public");
                 e.HasKey(x => x.Id);
                 e.Property(x => x.Id).HasColumnName("id");
-                e.Property(x => x.Placa).HasColumnName("placa").IsRequired().HasMaxLength(8);
+                e.Property(x => x.Placa).HasColumnName("placa").IsRequired().HasMaxLength(10);
                 e.Property(x => x.Modelo).HasColumnName("modelo").HasMaxLength(120);
                 e.Property(x => x.Ano).HasColumnName("ano");
                 e.Property(x => x.DataInclusao).HasColumnName("data_inclusao");
@@ -80,8 +80,9 @@ namespace Parking.Api.Data
                 e.Property(x => x.Competencia).HasColumnName("competencia").IsRequired(); // yyyy-MM
                 e.Property(x => x.ClienteId).HasColumnName("cliente_id");
                 e.Property(x => x.Valor).HasColumnName("valor");
-                e.Property(x => x.CriadaEm).HasColumnName("criada_em");
-                e.Property(x => x.Observacao).HasColumnName("observacao");
+                e.Property(x => x.QtdVeiculos).HasColumnName("qtd_veiculos");
+                e.Property(x => x.DataCriacao).HasColumnName("data_criacao");
+                e.Property(x => x.Observacoes).HasColumnName("observacoes");
                 e.HasMany(x => x.Veiculos).WithOne().HasForeignKey(x => x.FaturaId);
                 e.HasIndex(x => new { x.ClienteId, x.Competencia }).IsUnique();
             });
