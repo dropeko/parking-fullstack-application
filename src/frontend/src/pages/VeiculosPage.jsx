@@ -107,101 +107,6 @@ export default function VeiculosPage(){
     }}>
       <h2 style={{color: '#f1f5f9', marginBottom: '24px'}}>🚗 Veículos</h2>
 
-      {/* Filtro por Cliente */}
-      <div style={{
-        backgroundColor: '#1e293b',
-        border: '1px solid #374151',
-        borderRadius: '12px',
-        padding: '20px',
-        marginBottom: '32px'
-      }}>
-        <h3 style={{color: '#f1f5f9', marginBottom: '16px', fontSize: '18px'}}>🔍 Filtrar por Cliente</h3>
-        
-        <div style={{display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap'}}>
-          <label style={{
-            fontSize: '14px', 
-            color: '#94a3b8',
-            fontWeight: '500',
-            minWidth: 'fit-content'
-          }}>
-            Cliente:
-          </label>
-          <select 
-            value={clienteId} 
-            onChange={e => { 
-              setClienteId(e.target.value)
-              setForm(f => ({...f, clienteId: e.target.value}))
-            }}
-            style={{
-              padding: '10px 12px',
-              border: '1px solid #475569',
-              borderRadius: '8px',
-              fontSize: '14px',
-              backgroundColor: '#0f172a',
-              color: '#f1f5f9',
-              minWidth: '200px',
-              flex: 1
-            }}
-          >
-            <option value="">Todos os clientes</option>
-            {clientes.data?.itens?.map(c => (
-              <option key={c.id} value={c.id}>
-                {c.nome} {c.mensalista ? '(Mensalista)' : '(Avulso)'}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Estatísticas */}
-      {totalVeiculos > 0 && (
-        <div style={{
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', 
-          gap: '16px', 
-          marginBottom: '32px'
-        }}>
-          <div style={{
-            padding: '16px',
-            backgroundColor: '#1e293b',
-            border: '1px solid #3b82f6',
-            borderRadius: '8px',
-            textAlign: 'center'
-          }}>
-            <div style={{fontSize: '24px', fontWeight: 'bold', color: '#60a5fa'}}>
-              {totalVeiculos}
-            </div>
-            <div style={{color: '#93c5fd', fontSize: '12px'}}>Total de Veículos</div>
-          </div>
-
-          <div style={{
-            padding: '16px',
-            backgroundColor: '#1a1a2e',
-            border: '1px solid #8b5cf6',
-            borderRadius: '8px',
-            textAlign: 'center'
-          }}>
-            <div style={{fontSize: '24px', fontWeight: 'bold', color: '#a78bfa'}}>
-              {veiculosComModelo}
-            </div>
-            <div style={{color: '#c4b5fd', fontSize: '12px'}}>Com Modelo</div>
-          </div>
-
-          <div style={{
-            padding: '16px',
-            backgroundColor: '#0f1f0f',
-            border: '1px solid #22c55e',
-            borderRadius: '8px',
-            textAlign: 'center'
-          }}>
-            <div style={{fontSize: '24px', fontWeight: 'bold', color: '#4ade80'}}>
-              {veiculosComAno}
-            </div>
-            <div style={{color: '#86efac', fontSize: '12px'}}>Com Ano</div>
-          </div>
-        </div>
-      )}
-
       {/* Formulário de Novo Veículo */}
       <div style={{
         backgroundColor: '#1e293b',
@@ -351,6 +256,101 @@ export default function VeiculosPage(){
           </div>
         )}
       </div>
+
+      {/* Filtro por Cliente */}
+      <div style={{
+        backgroundColor: '#1e293b',
+        border: '1px solid #374151',
+        borderRadius: '12px',
+        padding: '20px',
+        marginBottom: '32px'
+      }}>
+        <h3 style={{color: '#f1f5f9', marginBottom: '16px', fontSize: '18px'}}>🔍 Filtrar por Cliente</h3>
+        
+        <div style={{display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap'}}>
+          <label style={{
+            fontSize: '14px', 
+            color: '#94a3b8',
+            fontWeight: '500',
+            minWidth: 'fit-content'
+          }}>
+            Cliente:
+          </label>
+          <select 
+            value={clienteId} 
+            onChange={e => { 
+              setClienteId(e.target.value)
+              setForm(f => ({...f, clienteId: e.target.value}))
+            }}
+            style={{
+              padding: '10px 12px',
+              border: '1px solid #475569',
+              borderRadius: '8px',
+              fontSize: '14px',
+              backgroundColor: '#0f172a',
+              color: '#f1f5f9',
+              minWidth: '200px',
+              flex: 1
+            }}
+          >
+            <option value="">Todos os clientes</option>
+            {clientes.data?.itens?.map(c => (
+              <option key={c.id} value={c.id}>
+                {c.nome} {c.mensalista ? '(Mensalista)' : '(Avulso)'}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Estatísticas */}
+      {totalVeiculos > 0 && (
+        <div style={{
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', 
+          gap: '16px', 
+          marginBottom: '32px'
+        }}>
+          <div style={{
+            padding: '16px',
+            backgroundColor: '#1e293b',
+            border: '1px solid #3b82f6',
+            borderRadius: '8px',
+            textAlign: 'center'
+          }}>
+            <div style={{fontSize: '24px', fontWeight: 'bold', color: '#60a5fa'}}>
+              {totalVeiculos}
+            </div>
+            <div style={{color: '#93c5fd', fontSize: '12px'}}>Total de Veículos</div>
+          </div>
+
+          <div style={{
+            padding: '16px',
+            backgroundColor: '#1a1a2e',
+            border: '1px solid #8b5cf6',
+            borderRadius: '8px',
+            textAlign: 'center'
+          }}>
+            <div style={{fontSize: '24px', fontWeight: 'bold', color: '#a78bfa'}}>
+              {veiculosComModelo}
+            </div>
+            <div style={{color: '#c4b5fd', fontSize: '12px'}}>Com Modelo</div>
+          </div>
+
+          <div style={{
+            padding: '16px',
+            backgroundColor: '#0f1f0f',
+            border: '1px solid #22c55e',
+            borderRadius: '8px',
+            textAlign: 'center'
+          }}>
+            <div style={{fontSize: '24px', fontWeight: 'bold', color: '#4ade80'}}>
+              {veiculosComAno}
+            </div>
+            <div style={{color: '#86efac', fontSize: '12px'}}>Com Ano</div>
+          </div>
+        </div>
+      )}
 
       {/* Lista de Veículos */}
       <div style={{
