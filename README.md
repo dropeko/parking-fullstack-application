@@ -301,7 +301,7 @@ VITE_API_URL=http://localhost:5173
 
 ## 👨‍💻 Desenvolvido por
 
-**PHCA** - Sistema completo de gerenciamento de estacionamento com faturamento proporcional e interface moderna.
+**PHCA.dev** - Sistema completo de gerenciamento de estacionamento com faturamento proporcional e interface moderna.
 
 **Stack**: .NET 8 + React + PostgreSQL + Entity Framework + React Query  
 **Features**: Transferência de veículos, faturamento proporcional, importação CSV, dark mode UI
