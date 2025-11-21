@@ -1,6 +1,6 @@
 # 🅿️ PHCA Parking System
 
-Sistema completo de gerenciamento de estacionamento desenvolvido com **.NET 8** e **React**, featuring advanced parking management, proportional billing, vehicle transfers, and modern dark mode UI.
+Sistema completo de gerenciamento de estacionamento desenvolvido com **.NET 8** e **React**, com recursos avançados de gerenciamento de estacionamento, faturamento proporcional, transferência de veículos e interface de usuário moderna em dark mode.
 
 ## 🚀 Funcionalidades Principais
 
