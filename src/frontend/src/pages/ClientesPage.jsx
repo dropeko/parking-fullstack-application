@@ -957,3 +957,5 @@ export default function ClientesPage(){
     </div>
   )
 }
+
+// footer
